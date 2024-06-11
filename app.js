@@ -1,23 +1,34 @@
 const express = require("express")
 const mongoose = require("mongoose")
 const cors =require("cors")
-const student =require("./models/student")
+const {studentmodel}=require("./models/student")
 
 const app=express()
 app.use(cors())
+app.use(express.json())
 
-app.get("/" ,(req,res)=>{
-    res.send("hello")
-})
-app.post("/contact",(req,res)=>{
-    res.send("welcome to my contact page")
-})
+mongoose.connect("mongodb+srv://snehatk:6282011259@cluster0.jd3vcot.mongodb.net/studentdb?retryWrites=true&w=majority&appName=Cluster0")
 
 app.post("/add",(req,res)=>{
-    res.send("test")
+    let input=req.body
+    let student =new studentmodel(input)
+    student.save()
+    console.log(student)
+    res.json({"status":"success"})
+})
+
+app.get("/view",(req,res)=>{
+    studentmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
 })
 
 app.listen(8080,()=>{
     console.log("SERVER STARTED")
 })
-
